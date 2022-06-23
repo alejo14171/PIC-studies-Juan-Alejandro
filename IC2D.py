@@ -1,7 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.gridspec import GridSpec
-import math 
+import math
+
+import clases
 
 def BorisA(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz,q,m,dt):
   #print(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz)
@@ -145,8 +147,22 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     J2[0,1]=(1/(dx*dy))*Fy[1]*(1-Wx[1])
     J2[2,1]=(1/(dx*dy))*Fy[1]*Wx[1]
 
-    
+def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
+    #num_save = 3
+    # Atemp_local
+    # Atemp_total
+    # ntotal = Nx*Ny*Nz*num_save
+    # Atemp_local = ???
+    # Atemp_total = ???
+    dV = dx*dy
 
+    #Atemp_local = np.zeros(ntotal)
+    #Atemp_total = np.zeros(ntotal)
+
+    xgc.jx = np.zeros([Nx, Ny])
+    xgc.jy = np.zeros([Nx, Ny])
+
+    
     
 
 
