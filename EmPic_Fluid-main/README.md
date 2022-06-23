@@ -1,0 +1,4 @@
+# EmPic_Fluid
+
+
+ELECTROMAGNETIC PARTICLE-IN-CELL, MULTI-FLUID SIMULATION CODE. The aim of this project is developing a simulation tool to study fluid and kinetic processes in space and laboratory plasmas. At current stage, the Maxwell equations are solved using Finite Difference Time Domain (FDTF) while the the equations of motions using Boris scheme and the 5-moment two-fluid equations (conservation of mass, momentun and energy equations) are solved using Finite Volume method on cartesian grid. The fluxes are obtained by the modified Harten-Lax-van Leer Contact (HLLC) approximate Riemann solver and we implemented the Strong Stability Preserving Runge-Kutta method for time-marching and second order total variation diminishing (TVD) spatial reconstruction. The code is parallelized using MPI.
