@@ -1,3 +1,5 @@
+import math
+import numpy as np
 def BorisA(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz,q,m,dt):
   #print(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz)
 
@@ -42,14 +44,13 @@ def BorisA(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz,q,m,dt):
 
 #Método de leapfrog para hallar las componentes de la siguiente posición
 
-def leapfrog(posx,posy,posz,ux,uy,uz,dt):
+def leapfrog(posx, posy, posz, ux, uy, uz, dt):
   pos_finalx=posx+ux*dt
   pos_finaly=posy+uy*dt
   pos_finalz=posz+uz*dt
   return pos_finalx,pos_finaly,pos_finalz
-  
 
-def interpolation(posx,posy,posz):
+def interpolation(posx, posy, posz):
     #x-direction
     ix =  int((posx-xmin)/dx) #index x
     xleft = posx    #position of the left node
@@ -67,7 +68,7 @@ def interpolation(posx,posy,posz):
     #print(ileft,iright,hxleft,jdown,jup,hydown)
     return ileft,iright,hxleft,jdown,jup,hydown
   
-def get_fields_nodes(ex,ey,ez,bx,by,bz,ileft,iright,hxleft,jdown,jup,hydown):
+def get_fields_nodes(ex, ey, ez, bx, by, bz, ileft, iright, hxleft, jdown, jup, hydown):
     #weight functions
     w1 = (1.0-hxleft)*(1.0-hydown)
     w2 = hxleft*(1.0-hydown)
@@ -99,8 +100,8 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     
 
 
-    ii[0]=math.floor(xi,dx)
-    jj[0]=math.floor(yi,dy)
+    ii[0]=math.floor(xi/dx)
+    jj[0]=math.floor(yi/dy)
 
 
     ii[1]=math.floor(xf/dx)  
@@ -139,18 +140,38 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     J2[1,2]=(1/(dx*dy))*Fx[1]*Wy[1]
     J2[0,1]=(1/(dx*dy))*Fy[1]*(1-Wx[1])
     J2[2,1]=(1/(dx*dy))*Fy[1]*Wx[1]
+    
+def zig_zag(x1, y1, x2, y2, dx, dy, dt, q): # dx, dy, dt, q pueden ser globales
 
-def densidad_corriente_zigzag(puntosDeMalla, pos_inicial, pos_final):
-    #num_save = 3
-    # Atemp_local
-    # Atemp_total
-    # ntotal = Nx*Ny*Nz*num_save
-    # Atemp_local = ???
-    # Atemp_total = ???
-    dV = dx*dy
+    i1 = math.floor(x1/dx) #1.8->1
+    i2 = math.floor(x2/dx)
+    j1 = math.floor(y1/dy)
+    j2 = math.floor(y2/dy)
 
-    #Atemp_local = np.zeros(ntotal)
-    #Atemp_total = np.zeros(ntotal)
+    xr = min(min(i1*dx, i2*dx) + dx, max(max(i1*dx, i2*dx), (x1+x2)/2))
+    yr = min(min(j1*dy, j2*dy) + dy, max(max(j1*dy, j2*dy), (y1+y2)/2))
 
-    puntosDeMalla = np.zeros([Nx, Ny]) #xgc
+    Fx1 = q*(xr-x1)/dt
+    Fy1 = q*(yr-y1)/dt
+    Fx2 = q*(x2-xr)/dt
+    Fy2 = q*(y2-yr)/dt
+
+    Wx1 = ((x1+xr)/2*dx) - i1
+    Wy1 = ((y1+yr)/2*dy) - j1
+    Wx2 = ((xr+x2)/2*dx) - i2
+    Wy2 = ((yr+y2)/2*dx) - j2
+
+    c = c = 1/dx*dy
+
+    J1x1 = c*Fx1*(1-Wy1) #Jx(i1+1/2, j1)
+    J1x2 = c*Fx1*(Wy1)   #Jx(i1+1/2, j1+1)
+    J1y1 = c*Fy1*(1-Wx1) #Jy(i1, j1+1/2)
+    J1y2 = c*Fy1*(Wx1)   #Jy(i1+1, j1+1/2)
+
+    J2x1 = c*Fx2*(1-Wy2) #Jx(i2+1/2, j2)
+    J2x2 = c*Fx2*(Wy2)   #Jx(i2+1/2, j2+1)
+    J2y1 = c*Fy2*(1-Wx2) #Jy(i2, j2+1/2)
+    J2y2 = c*Fy2*(Wx2)   #Jy(i2+1, j2+1/2)
+
+    return(J1x1, J1x2, J1y1, J1y2, J2x1, J2x2, J2y1, J2y2)
     
