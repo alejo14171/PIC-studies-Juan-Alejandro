@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib.gridspec import GridSpec
 import math
 
-import clases
+#import clases, funciones
 
 def BorisA(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz,q,m,dt):
   #print(Ex,Ey,Ez,Bx,By,Bz,velx,vely,velz)
@@ -106,8 +106,8 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     
 
 
-    ii[0]=math.floor(xi,dx)
-    jj[0]=math.floor(yi,dy)
+    ii[0]=math.floor(xi/dx)
+    jj[0]=math.floor(yi/dy)
 
 
     ii[1]=math.floor(xf/dx)  
@@ -146,6 +146,10 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     J2[1,2]=(1/(dx*dy))*Fx[1]*Wy[1]
     J2[0,1]=(1/(dx*dy))*Fy[1]*(1-Wx[1])
     J2[2,1]=(1/(dx*dy))*Fy[1]*Wx[1]
+    
+
+    
+    
 
 def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
     #num_save = 3
@@ -161,7 +165,7 @@ def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
 
     xgc.jx = np.zeros([Nx, Ny])
     xgc.jy = np.zeros([Nx, Ny])
-
+    
     
     
 
@@ -170,10 +174,14 @@ def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
 
 
 #definicion de malla computacional
-xmin = -1.0*np.pi
-xmax = 1.0*np.pi
-ymin = -1.0*np.pi
-ymax = 1.0*np.pi
+# xmin = -1.0*np.pi
+# xmax = 1.0*np.pi
+# ymin = -1.0*np.pi
+# ymax = 1.0*np.pi
+xmin = -4.0
+xmax = 4.0
+ymin = -4.0
+ymax = 4.0
 Nx = 64
 Ny = 64
 Lx =  xmax-xmin
@@ -192,8 +200,8 @@ q=1.0
 m=1.0
 
 #crear malla y campos
-xx = np.zeros(xmin,xmax,Nx+1)
-yy = np.zeros(ymin,ymax,Ny+1)
+xx = np.linspace(xmin,xmax,Nx+1)
+yy = np.linspace(ymin,ymax,Ny+1)
 x,y = np.meshgrid(xx,yy)
 
 
@@ -284,13 +292,6 @@ for i in range(nout):
         
         energia_cinetica [i] = 0.5*m*(u_finalx**2+u_finaly**2+u_finalz**2)
         epsilon_r [i] = (energia_cinetica[i]- energia_cinetica[0] )/energia_cinetica[0]
-
-
-
-
-
-
-
 
 
 #Gráficas
