@@ -147,24 +147,39 @@ def zigzag(xi,yi,zi,xf,yf,zf,dx,dy,dt):
     J2[0,1]=(1/(dx*dy))*Fy[1]*(1-Wx[1])
     J2[2,1]=(1/(dx*dy))*Fy[1]*Wx[1]
     
+def zig_zag_Alejo(x1, y1, x2, y2, Δx, Δy, Δt, q): # Δx, Δy, Δt, q pueden ser globales
 
-    
-    
+    i1 = math.floor(x1/Δx)
+    i2 = math.floor(x2/Δx)
+    j1 = math.floor(y1/Δy)
+    j2 = math.floor(y2/Δy)
 
-def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
-    #num_save = 3
-    # Atemp_local
-    # Atemp_total
-    # ntotal = Nx*Ny*Nz*num_save
-    # Atemp_local = ???
-    # Atemp_total = ???
-    dV = dx*dy
+    xr = min(min(i1*Δx, i2*Δx) + Δx, max(max(i1*Δx, i2*Δx), (x1+x2)/2))
+    yr = min(min(j1*Δy, j2*Δy) + Δy, max(max(j1*Δy, j2*Δy), (y1+y2)/2))
 
-    #Atemp_local = np.zeros(ntotal)
-    #Atemp_total = np.zeros(ntotal)
+    Fx1 = q*(xr-x1)/Δt
+    Fy1 = q*(yr-y1)/Δt
+    Fx2 = q*(x2-xr)/Δt
+    Fy2 = q*(y2-yr)/Δt
 
-    xgc.jx = np.zeros([Nx, Ny])
-    xgc.jy = np.zeros([Nx, Ny])
+    Wx1 = ((x1+xr)/2*Δx) - i1
+    Wy1 = ((y1+yr)/2*Δy) - j1
+    Wx2 = ((xr+x2)/2*Δx) - i2
+    Wy2 = ((yr+y2)/2*Δx) - j2
+
+    c = c = 1/Δx*Δy
+
+    J1x1 = c*Fx1*(1-Wy1) #Jx(i1+1/2, j1)
+    J1x2 = c*Fx1*(Wy1)   #Jx(i1+1/2, j1+1)
+    J1y1 = c*Fy1*(1-Wx1) #Jy(i1, j1+1/2)
+    J1y2 = c*Fy1*(Wx1)   #Jy(i1+1, j1+1/2)
+
+    J2x1 = c*Fx2*(1-Wy2) #Jx(i2+1/2, j2)
+    J2x2 = c*Fx2*(Wy2)   #Jx(i2+1/2, j2+1)
+    J2y1 = c*Fy2*(1-Wx2) #Jy(i2, j2+1/2)
+    J2y2 = c*Fy2*(Wx2)   #Jy(i2+1, j2+1/2)
+
+    return(J1x1, J1x2, J1y1, J1y2, J2x1, J2x2, J2y1, J2y2)
     
     
     
@@ -178,10 +193,6 @@ def densidad_corriente_zigzag(xgc, pos_antigua, pos_nueva):
 # xmax = 1.0*np.pi
 # ymin = -1.0*np.pi
 # ymax = 1.0*np.pi
-xmin = -4.0
-xmax = 4.0
-ymin = -4.0
-ymax = 4.0
 Nx = 64
 Ny = 64
 Lx =  xmax-xmin
